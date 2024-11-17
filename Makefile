@@ -14,8 +14,8 @@ run_first_client_server: prepare $(BIN)/client
 $(BIN)/server: prepare server/main.cpp server/server.cpp $(BIN)/utils.o
 	$(COMPILER) $(FLAGS) server/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/server
 
-$(BIN)/client: prepare client/main.cpp server/server.cpp $(BIN)/utils.o
-	$(COMPILER) $(FLAGS) client/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/client
+$(BIN)/client: prepare client/main.cpp client/client.cpp $(BIN)/utils.o
+	$(COMPILER) $(FLAGS) client/main.cpp client/client.cpp $(BIN)/utils.o -o $(BIN)/client
 
 $(BIN)/utils.o: prepare utils/utils.cpp
 	$(COMPILER) -c $(FLAGS) utils/utils.cpp -o $(BIN)/utils.o
