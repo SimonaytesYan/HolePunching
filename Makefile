@@ -11,14 +11,14 @@ run_rendezvous_server: prepare $(BIN)/server
 run_first_client_server: prepare $(BIN)/client
 	./$(BIN)/client $(RENDEZVOUS_SERVER_ADDR) $(CLIENT_ADDR) $(CLIENT_ADDR) &
 
-$(BIN)/server: server/main.cpp server/server.cpp $(BIN)/utils.o
+$(BIN)/server: prepare server/main.cpp server/server.cpp $(BIN)/utils.o
 	$(COMPILER) $(FLAGS) server/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/server
 
-$(BIN)/client: client/main.cpp server/server.cpp $(BIN)/utils.o
+$(BIN)/client: prepare client/main.cpp server/server.cpp $(BIN)/utils.o
 	$(COMPILER) $(FLAGS) client/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/client
 
-$(BIN)/utils.o: utils/utils.cpp
-	$(COMPILER) -c $(FLAGS) utils/utils.cpp -o $(BIN)/utils,o
+$(BIN)/utils.o: prepare utils/utils.cpp
+	$(COMPILER) -c $(FLAGS) utils/utils.cpp -o $(BIN)/utils.o
 
 clean:
 	rm $(BIN)/*
