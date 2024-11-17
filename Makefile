@@ -3,23 +3,22 @@ OBJ = obj
 COMPILER = g++
 FLAGS = -O2
 
-RENDEZVOUS_SERVER_IP = 192.168.1.1:8080
+RENDEZVOUS_SERVER_ADDR = 192.168.1.1:8080
 
 run_rendezvous_server: prepare $(BIN)/server
-	./$(BIN)/server $(RENDEZVOUS_SERVER_IP) &
+	./$(BIN)/server $(RENDEZVOUS_SERVER_ADDR) &
 
 run_first_client_server: prepare $(BIN)/client
-	./$(BIN)/client $(RENDEZVOUS_SERVER_IP) &
+	./$(BIN)/client $(RENDEZVOUS_SERVER_ADDR) $(CLIENT_ADDR) $(CLIENT_ADDR) &
 
-run_first_client_server: prepare $(BIN)/client
-	./$(BIN)/client $(RENDEZVOUS_SERVER_IP) &
+$(BIN)/server: server/main.cpp server/server.cpp $(BIN)/utils.o
+	$(COMPILER) $(FLAGS) server/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/server
 
+$(BIN)/client: client/main.cpp server/server.cpp $(BIN)/utils.o
+	$(COMPILER) $(FLAGS) client/main.cpp server/server.cpp $(BIN)/utils.o -o $(BIN)/client
 
-$(BIN)/server: server/main.cpp server/server.cpp
-	$(COMPILER) $(FLAGS) server/main.cpp server/server.cpp -o $(BIN)/server
-
-$(BIN)/client: client/main.cpp server/server.cpp
-	$(COMPILER) $(FLAGS) client/main.cpp server/server.cpp -o $(BIN)/client
+$(BIN)/utils.o: utils/utils.cpp
+	$(COMPILER) -c $(FLAGS) utils/utils.cpp -o $(BIN)/utils,o
 
 clean:
 	rm $(BIN)/*
