@@ -59,7 +59,7 @@ const size_t kBufferSize = 1024;
 
 Addr::operator sockaddr_in() const {
     char str[kBufferSize] = {};
-    sprintf(str, "%d.%d.%d.%d", ip.p1, ip.p1, ip.p1, ip.p1);
+    sprintf(str, "%d.%d.%d.%d", ip.p1, ip.p2, ip.p3, ip.p4);
 
     std::cerr << "str = " << str << "\n";
 
