@@ -65,7 +65,10 @@ Addr::operator sockaddr_in() const {
 }
 
 std::ostream& operator<<(std::ostream& out, const Addr& addr) {
-    out << addr.ip.p1 << "." << addr.ip.p2 << "." << addr.ip.p3 << "." << addr.ip.p4 << ":" << addr.port << " \n";
+    out << (int)addr.ip.p1 << "." 
+        << (int)addr.ip.p2 << "." 
+        << (int)addr.ip.p3 << "." 
+        << (int)addr.ip.p4 << ":" << addr.port << " \n";
     return out;
 }
 
