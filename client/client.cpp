@@ -12,10 +12,17 @@ Client::Client(Addr client_addr, Addr server_addr, ClientType client_type) :
     sockaddr_in sock_addr = addr_;
     bind(socket_, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
 
+    std::cout << "client addr " << client_addr <<  "\n";
+    std::cout << "sever  addr " << server_addr <<  "\n";
+    std::cout << "client type " << (int)type_ <<  "\n";
+
     sendToServer(ServerRequest(RequestType::NEW_CLIENT, addr_));
+    std::cout << "end ctor successfully\n";
 }
 
 void Client::sendToServer(ServerRequest request) {
+    std::cout << "sendToServer\n";
+
     sockaddr_in server_sock_addr = server_addr_;
     sendto(socket_, &request, sizeof(request), 0, 
             (sockaddr*)&server_sock_addr, sizeof(server_addr_));
@@ -23,6 +30,7 @@ void Client::sendToServer(ServerRequest request) {
 
 
 void Client::run() {
+    std::cout << "Client run\n";
 
     if (type_ == ClientType::STARTER) {
         initiateConnection();
@@ -62,9 +70,12 @@ void Client::run() {
 }
 
 void Client::initiateConnection() {
+    std::cout << "initiateConnection\n";
+    
     sendToServer(ServerRequest(RequestType::NEW_CLIENT, {}));
 
     recvfrom(socket_, &other_client_, sizeof(other_client_), 0, nullptr, nullptr);
+    std::cout << "Got other client: " << other_client_ << "\n";
 
     tryPunchHole();
     tryPunchHole();
@@ -76,6 +87,8 @@ void Client::initiateConnection() {
     recvfrom(socket_, &connection_msg_buffer, sizeof(connection_msg_buffer), 0, 
              (sockaddr*) &other_sock_addr, &other_sock_addr_len);
     
+    printf("Receive 0x%X\n", connection_msg_buffer);
+
     if (kConnectionMsg != connection_msg_buffer) {
         std::cerr << "CLIENT GOT NOT CONNECTION MSG\n";
         return;
@@ -100,16 +113,50 @@ Addr Client::getConnectionAddr() {
 }
 
 void Client::tryPunchHole() {
+    std::cout << "tryPunchHole\n";
     sockaddr_in other_client_sockaddr = other_client_.local_addr;
     
     sendto(socket_, &kConnectionMsg, sizeof(kConnectionMsg), 0,
           (sockaddr*)&other_client_sockaddr, sizeof(other_client_sockaddr));
+    std::cout << "punch hole\n";
     
     other_client_sockaddr = other_client_.public_addr;
     sendto(socket_, &kConnectionMsg, sizeof(kConnectionMsg), 0, 
           (sockaddr*)&other_client_sockaddr, sizeof(other_client_sockaddr));
+    std::cout << "punch hole\n";
 }
 
 void Client::waitConnection() {
+    std::cout << "waitConnection\n";
+
     recvfrom(socket_, &other_client_, sizeof(other_client_), 0, nullptr, nullptr);
+    std::cout << "Got other client: " << other_client_ << "\n";
+
+    tryPunchHole();
+    tryPunchHole();
+
+    uint64_t connection_msg_buffer = 0;
+    sockaddr_in other_sock_addr = {};
+    uint32_t other_sock_addr_len = 0;
+
+    recvfrom(socket_, &connection_msg_buffer, sizeof(connection_msg_buffer), 0, 
+             (sockaddr*) &other_sock_addr, &other_sock_addr_len);
+    
+    printf("Receive 0x%X\n", connection_msg_buffer);
+
+    if (kConnectionMsg != connection_msg_buffer) {
+        std::cerr << "CLIENT GOT NOT CONNECTION MSG\n";
+        return;
+    }
+
+    if (Addr(other_sock_addr) == other_client_.local_addr) {
+        connection_type_ = ConnectionType::LOCAL;
+    }
+    else if (Addr(other_sock_addr) == other_client_.public_addr) {
+        connection_type_ = ConnectionType::PUBLIC;
+    }
+    else {
+        std::cerr << "CLIENT FAIL TO CONNECT";
+        return;
+    }
 }
