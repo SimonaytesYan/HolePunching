@@ -61,8 +61,6 @@ Addr::operator sockaddr_in() const {
     char str[kBufferSize] = {};
     sprintf(str, "%d.%d.%d.%d", ip.p1, ip.p2, ip.p3, ip.p4);
 
-    std::cerr << "str = " << str << "\n";
-
     sockaddr_in addr = {};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);

@@ -7,7 +7,9 @@
 Server::Server(Addr addr) {
     socket_ = socket(AF_INET, SOCK_STREAM, 0);
     sockaddr_in server_addr = addr;
-    bind(socket_, (struct sockaddr*)&server_addr, sizeof(server_addr));
+    int err = bind(socket_, (struct sockaddr*)&server_addr, sizeof(server_addr));
+
+    std::cerr << "bind err = " << err << "\n";
 
     listen(socket_, kConnectionReqs);
 
