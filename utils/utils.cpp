@@ -40,7 +40,7 @@ bool PublicLocalAddr::operator!=(const PublicLocalAddr& other) const {
 }
 
 Addr::Addr(const char* str) {
-    sscanf(str, "%d:%d:%d:%d:%d", &ip.p1, &ip.p2, &ip.p3, &ip.p4, &port);
+    sscanf(str, "%d.%d.%d.%d:%d", &ip.p1, &ip.p2, &ip.p3, &ip.p4, &port);
 }
 
 Addr::Addr(sockaddr_in sock_addr) :
