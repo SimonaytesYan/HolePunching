@@ -11,6 +11,7 @@ Client::Client(Addr client_addr, Addr server_addr, ClientType client_type) :
     
     sockaddr_in sock_addr = addr_;
     bind(socket_, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
+    listen(socket_, kConnectionReqs);
 
     std::cout << "client addr " << client_addr <<  "\n";
     std::cout << "sever  addr " << server_addr <<  "\n";
@@ -24,7 +25,7 @@ void Client::sendToServer(ServerRequest request) {
     std::cout << "sendToServer\n";
 
     sockaddr_in server_sock_addr = server_addr_;
-    sendto(socket_, &request, sizeof(request), 0, 
+    sendto(socket_, &request, sizeof(request), 0,
             (sockaddr*)&server_sock_addr, sizeof(server_addr_));
 }
 

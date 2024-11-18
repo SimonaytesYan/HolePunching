@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <iostream>
 
+const size_t kConnectionReqs = 100;
+
 struct IPv4 {
     uint8_t p1;
     uint8_t p2;

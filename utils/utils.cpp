@@ -56,10 +56,13 @@ bool Addr::operator!=(const Addr& other) const {
 }
 
 Addr::operator sockaddr_in() const {
+    char str[15];
+    sprintf(str, "%d.%d.%d.%d", ip.p1, ip.p1, ip.p1, ip.p1);
+
     sockaddr_in addr = {};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = htons(ip);
+    addr.sin_addr.s_addr = inet_addr(str);
 
     return addr;
 }
