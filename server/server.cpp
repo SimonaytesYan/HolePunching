@@ -11,7 +11,8 @@ Server::Server(Addr addr) {
 
     std::cerr << "bind err = " << err << "\n";
 
-    listen(socket_, kConnectionReqs);
+    err = listen(socket_, kConnectionReqs);
+    std::cerr << "listen err = " << err << "\n";
 
     std::cerr << "Server started successfully!\n";
 }
