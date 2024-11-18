@@ -63,3 +63,23 @@ Addr::operator sockaddr_in() const {
 
     return addr;
 }
+
+std::ostream& operator<<(std::ostream& out, const Addr& addr) {
+    out << addr.ip.p1 << "." << addr.ip.p2 << "." << addr.ip.p3 << "." << addr.ip.p4 << ":" << addr.port << " \n";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const ServerRequest& request) {
+    out << "local_addr = ";
+    out << request.local_addr << " \n";
+    out << "type       = ";
+    out << (int)request.type;
+    out << " \n\n";
+
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const PublicLocalAddr& pl_addr) {
+    out << "local:  " << pl_addr.local_addr << "\n";
+    out << "public: " << pl_addr.public_addr << "\n";
+}

@@ -10,9 +10,12 @@ Server::Server(Addr addr) {
     bind(socket_, (struct sockaddr*)&server_addr, sizeof(server_addr));
 
     listen(socket_, kConnectionReqs);
+
+    std::cout << "Server started successfully!\n";
 }
 
 void Server::run() {
+    std::cout << "Server run!\n";
     while (true) {
         sockaddr_in client_addr     = {};
         uint32_t    client_addr_len = 0;
@@ -22,6 +25,9 @@ void Server::run() {
 
         ServerRequest request = {};
         ssize_t read_n = recv(client_socket, &request, sizeof(request), 0);
+        std::cout << "Server recv!\n";
+        std::cout << "\tclient_addr: " << Addr(client_addr) << "\n";
+        std::cout << "\trequest:     " << request << "\n";
 
         switch (request.type) {
             case RequestType::NEW_CLIENT: {
@@ -35,12 +41,13 @@ void Server::run() {
             default:
                 std::cerr << "Wrong request type\n";
         }
-            
+
         close(client_socket);
     }
 }
 
 void Server::addNewClient(Addr public_addr, Addr local_addr) {
+    std::cout << "Add new client\n";
     PublicLocalAddr client_addr = {public_addr, local_addr};
     
     for (auto client : client_addrs) {
@@ -52,6 +59,8 @@ void Server::addNewClient(Addr public_addr, Addr local_addr) {
 }
 
 void Server::sendOtherClientId(Addr client_addr, int client_socket) {
+    std::cout << "sendOtherClientId\n";
+
     const size_t size = client_addrs.size();
 
     if (size < 2) {
@@ -73,6 +82,9 @@ void Server::sendOtherClientId(Addr client_addr, int client_socket) {
             a_client = client;
         }
     }
+
+    std::cout << "a client: " << a_client << "\n";
+    std::cout << "b client: " << b_client << "\n";
 
     sockaddr_in a_client_sock_addr = a_client.public_addr;
     sendto(socket_, &b_client, sizeof(b_client), 0, 

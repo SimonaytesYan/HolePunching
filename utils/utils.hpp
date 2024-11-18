@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <iostream>
 
 struct IPv4 {
     uint8_t p1;
@@ -33,6 +34,8 @@ struct Addr {
     operator sockaddr_in() const;
 };
 
+std::ostream& operator<<(std::ostream& out, const Addr& addr);
+
 struct PublicLocalAddr {
     Addr public_addr;
     Addr local_addr;
@@ -43,6 +46,7 @@ struct PublicLocalAddr {
     bool operator==(const PublicLocalAddr& other) const;
     bool operator!=(const PublicLocalAddr& other) const;
 };
+std::ostream& operator<<(std::ostream& out, const PublicLocalAddr& pl_addr);
 
 enum class RequestType {
     NEW_CLIENT,
@@ -60,4 +64,7 @@ struct ServerRequest {
     ServerRequest() :
     type(RequestType::NEW_CLIENT),
     local_addr() { }
+
 };
+
+std::ostream& operator<<(std::ostream& out, const ServerRequest& request);
