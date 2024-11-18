@@ -82,4 +82,6 @@ std::ostream& operator<<(std::ostream& out, const ServerRequest& request) {
 std::ostream& operator<<(std::ostream& out, const PublicLocalAddr& pl_addr) {
     out << "local:  " << pl_addr.local_addr << "\n";
     out << "public: " << pl_addr.public_addr << "\n";
+
+    return out;
 }
