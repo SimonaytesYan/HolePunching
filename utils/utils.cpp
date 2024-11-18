@@ -55,9 +55,13 @@ bool Addr::operator!=(const Addr& other) const {
     return !(operator==(other));
 }
 
+const size_t kBufferSize = 1024;
+
 Addr::operator sockaddr_in() const {
-    char str[15];
+    char str[kBufferSize] = {};
     sprintf(str, "%d.%d.%d.%d", ip.p1, ip.p1, ip.p1, ip.p1);
+
+    std::cerr << "str = " << str << "\n";
 
     sockaddr_in addr = {};
     addr.sin_family = AF_INET;
