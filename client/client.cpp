@@ -13,16 +13,16 @@ Client::Client(Addr client_addr, Addr server_addr, ClientType client_type) :
     bind(socket_, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
     listen(socket_, kConnectionReqs);
 
-    std::cout << "client addr " << client_addr <<  "\n";
-    std::cout << "sever  addr " << server_addr <<  "\n";
-    std::cout << "client type " << (int)type_ <<  "\n";
+    std::cerr << "client addr " << client_addr <<  "\n";
+    std::cerr << "sever  addr " << server_addr <<  "\n";
+    std::cerr << "client type " << (int)type_ <<  "\n";
 
     sendToServer(ServerRequest(RequestType::NEW_CLIENT, addr_));
-    std::cout << "end ctor successfully\n";
+    std::cerr << "end ctor successfully\n";
 }
 
 void Client::sendToServer(ServerRequest request) {
-    std::cout << "sendToServer\n";
+    std::cerr << "sendToServer\n";
 
     sockaddr_in server_sock_addr = server_addr_;
     sendto(socket_, &request, sizeof(request), 0,
@@ -31,7 +31,7 @@ void Client::sendToServer(ServerRequest request) {
 
 
 void Client::run() {
-    std::cout << "Client run\n";
+    std::cerr << "Client run\n";
 
     if (type_ == ClientType::STARTER) {
         initiateConnection();
@@ -71,12 +71,12 @@ void Client::run() {
 }
 
 void Client::initiateConnection() {
-    std::cout << "initiateConnection\n";
+    std::cerr << "initiateConnection\n";
     
     sendToServer(ServerRequest(RequestType::NEW_CLIENT, {}));
 
     recvfrom(socket_, &other_client_, sizeof(other_client_), 0, nullptr, nullptr);
-    std::cout << "Got other client: " << other_client_ << "\n";
+    std::cerr << "Got other client: " << other_client_ << "\n";
 
     tryPunchHole();
     tryPunchHole();
@@ -114,24 +114,24 @@ Addr Client::getConnectionAddr() {
 }
 
 void Client::tryPunchHole() {
-    std::cout << "tryPunchHole\n";
+    std::cerr << "tryPunchHole\n";
     sockaddr_in other_client_sockaddr = other_client_.local_addr;
     
     sendto(socket_, &kConnectionMsg, sizeof(kConnectionMsg), 0,
           (sockaddr*)&other_client_sockaddr, sizeof(other_client_sockaddr));
-    std::cout << "punch hole\n";
+    std::cerr << "punch hole\n";
     
     other_client_sockaddr = other_client_.public_addr;
     sendto(socket_, &kConnectionMsg, sizeof(kConnectionMsg), 0, 
           (sockaddr*)&other_client_sockaddr, sizeof(other_client_sockaddr));
-    std::cout << "punch hole\n";
+    std::cerr << "punch hole\n";
 }
 
 void Client::waitConnection() {
-    std::cout << "waitConnection\n";
+    std::cerr << "waitConnection\n";
 
     recvfrom(socket_, &other_client_, sizeof(other_client_), 0, nullptr, nullptr);
-    std::cout << "Got other client: " << other_client_ << "\n";
+    std::cerr << "Got other client: " << other_client_ << "\n";
 
     tryPunchHole();
     tryPunchHole();
